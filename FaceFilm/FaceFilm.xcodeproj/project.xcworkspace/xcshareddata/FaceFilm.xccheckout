@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>EDE031B5-AED5-4656-96A7-99D45EDE4876</string>
+	<key>IDESourceControlProjectName</key>
+	<string>FaceFilm</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>CFBF396055E00C68A924DE4F929634E3DCF2123D</key>
+		<string>https://github.com/jimmyjeng/iOS_FaceFilm.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>FaceFilm/FaceFilm.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>CFBF396055E00C68A924DE4F929634E3DCF2123D</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/jimmyjeng/iOS_FaceFilm.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>CFBF396055E00C68A924DE4F929634E3DCF2123D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CFBF396055E00C68A924DE4F929634E3DCF2123D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>iOS_FaceFilm</string>
+		</dict>
+	</array>
+</dict>
+</plist>
