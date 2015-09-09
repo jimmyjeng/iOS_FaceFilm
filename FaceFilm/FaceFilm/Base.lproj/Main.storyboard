@@ -23,14 +23,14 @@
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zal-Pm-vGp">
                                         <rect key="frame" x="0.0" y="0.0" width="800" height="450"/>
                                     </imageView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qlo-bg-IWt">
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qlo-bg-IWt">
                                         <rect key="frame" x="400" y="0.0" width="1" height="450"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="1" id="B5o-CX-WeS"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tFO-0F-oen">
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tFO-0F-oen">
                                         <rect key="frame" x="0.0" y="162" width="800" height="1"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -54,20 +54,44 @@
                                     <constraint firstItem="zal-Pm-vGp" firstAttribute="leading" secondItem="Pdp-Ia-uyZ" secondAttribute="leading" id="rDh-au-EfW"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hC-28-nre">
+                                <rect key="frame" x="163" y="609" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="T7T-r0-PGs"/>
+                                    <constraint firstAttribute="height" constant="50" id="pkI-qQ-hQS"/>
+                                </constraints>
+                                <state key="normal" image="Start.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="pressStart:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dex-9y-WxO"/>
+                                </connections>
+                            </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="4de-ng-gGL">
+                                <rect key="frame" x="16" y="28" width="51" height="31"/>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="centerX" secondItem="1hC-28-nre" secondAttribute="centerX" id="4xn-ab-zzy"/>
                             <constraint firstAttribute="centerX" secondItem="Pdp-Ia-uyZ" secondAttribute="centerX" id="LSl-t1-ljG"/>
+                            <constraint firstItem="1hC-28-nre" firstAttribute="top" secondItem="zal-Pm-vGp" secondAttribute="bottom" constant="50" id="dcY-CL-Ljx"/>
                             <constraint firstAttribute="centerY" secondItem="Pdp-Ia-uyZ" secondAttribute="centerY" id="mIu-4a-Acd"/>
                         </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
+                        <outlet property="debugSwitch" destination="4de-ng-gGL" id="EPw-fK-d2A"/>
                         <outlet property="imageView" destination="zal-Pm-vGp" id="9RU-pn-Nus"/>
+                        <outlet property="line1" destination="Qlo-bg-IWt" id="WgT-UM-PLh"/>
+                        <outlet property="line2" destination="tFO-0F-oen" id="VSE-N0-jRw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="Start.png" width="256" height="256"/>
+    </resources>
 </document>
