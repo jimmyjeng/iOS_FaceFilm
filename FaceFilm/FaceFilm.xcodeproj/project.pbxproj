@@ -30,6 +30,11 @@
 		BF47FF0B1B993F6F00DCFCC0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF47FF091B993F6F00DCFCC0 /* LaunchScreen.xib */; };
 		BF47FF171B993F6F00DCFCC0 /* FaceFilmTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BF47FF161B993F6F00DCFCC0 /* FaceFilmTests.m */; };
 		BF4EA6B01B9D601800949F4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4EA6AF1B9D601800949F4B /* QuartzCore.framework */; };
+		BFAD4AEF1BA27B8B007DC19B /* save.png in Resources */ = {isa = PBXBuildFile; fileRef = BFAD4AEE1BA27B8B007DC19B /* save.png */; };
+		BFAD4AF21BA2A059007DC19B /* Utillity.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAD4AF11BA2A059007DC19B /* Utillity.m */; };
+		BFFDBBEF1BA023350084F2AD /* MovieMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = BFFDBBEE1BA023350084F2AD /* MovieMaker.m */; };
+		BFFDBBF11BA0240F0084F2AD /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFFDBBF01BA0240F0084F2AD /* AVFoundation.framework */; };
+		BFFDBBF31BA048780084F2AD /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFFDBBF21BA048780084F2AD /* AssetsLibrary.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +77,13 @@
 		BF47FF151B993F6F00DCFCC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF47FF161B993F6F00DCFCC0 /* FaceFilmTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FaceFilmTests.m; sourceTree = "<group>"; };
 		BF4EA6AF1B9D601800949F4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BFAD4AEE1BA27B8B007DC19B /* save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = save.png; sourceTree = "<group>"; };
+		BFAD4AF01BA2A059007DC19B /* Utillity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utillity.h; sourceTree = "<group>"; };
+		BFAD4AF11BA2A059007DC19B /* Utillity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utillity.m; sourceTree = "<group>"; };
+		BFFDBBED1BA023350084F2AD /* MovieMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieMaker.h; sourceTree = "<group>"; };
+		BFFDBBEE1BA023350084F2AD /* MovieMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieMaker.m; sourceTree = "<group>"; };
+		BFFDBBF01BA0240F0084F2AD /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BFFDBBF21BA048780084F2AD /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +91,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFFDBBF31BA048780084F2AD /* AssetsLibrary.framework in Frameworks */,
+				BFFDBBF11BA0240F0084F2AD /* AVFoundation.framework in Frameworks */,
 				BF44BC821B9E807B0020AE09 /* CoreImage.framework in Frameworks */,
 				BF4EA6B01B9D601800949F4B /* QuartzCore.framework in Frameworks */,
 			);
@@ -97,6 +111,8 @@
 		BF44BC801B9E80690020AE09 /* framework */ = {
 			isa = PBXGroup;
 			children = (
+				BFFDBBF21BA048780084F2AD /* AssetsLibrary.framework */,
+				BFFDBBF01BA0240F0084F2AD /* AVFoundation.framework */,
 				BF44BC811B9E807B0020AE09 /* CoreImage.framework */,
 				BF4EA6AF1B9D601800949F4B /* QuartzCore.framework */,
 			);
@@ -129,7 +145,11 @@
 				BF47FEFE1B993F6F00DCFCC0 /* AppDelegate.h */,
 				BF47FEFF1B993F6F00DCFCC0 /* AppDelegate.m */,
 				BF47FF011B993F6F00DCFCC0 /* ViewController.h */,
+				BFAD4AF01BA2A059007DC19B /* Utillity.h */,
+				BFAD4AF11BA2A059007DC19B /* Utillity.m */,
 				BF47FF021B993F6F00DCFCC0 /* ViewController.m */,
+				BFFDBBED1BA023350084F2AD /* MovieMaker.h */,
+				BFFDBBEE1BA023350084F2AD /* MovieMaker.m */,
 				BF47FF041B993F6F00DCFCC0 /* Main.storyboard */,
 				BF47FF071B993F6F00DCFCC0 /* Images.xcassets */,
 				BF47FF091B993F6F00DCFCC0 /* LaunchScreen.xib */,
@@ -167,6 +187,7 @@
 		BFBA2C5A1B994A5F00CA8DD0 /* image */ = {
 			isa = PBXGroup;
 			children = (
+				BFAD4AEE1BA27B8B007DC19B /* save.png */,
 				BF44BCA11B9EE6060020AE09 /* Start.png */,
 				BF44BC891B9EAFDA0020AE09 /* 01.png */,
 				BF44BC8A1B9EAFDA0020AE09 /* 02.png */,
@@ -267,6 +288,7 @@
 			files = (
 				BF44BC9B1B9EB6660020AE09 /* 09.png in Resources */,
 				BF44BC931B9EAFDA0020AE09 /* 03.png in Resources */,
+				BFAD4AEF1BA27B8B007DC19B /* save.png in Resources */,
 				BF44BC911B9EAFDA0020AE09 /* 01.png in Resources */,
 				BF44BCA21B9EE6060020AE09 /* Start.png in Resources */,
 				BF47FF061B993F6F00DCFCC0 /* Main.storyboard in Resources */,
@@ -301,7 +323,9 @@
 			files = (
 				BF47FF031B993F6F00DCFCC0 /* ViewController.m in Sources */,
 				BF47FF001B993F6F00DCFCC0 /* AppDelegate.m in Sources */,
+				BFAD4AF21BA2A059007DC19B /* Utillity.m in Sources */,
 				BF47FEFD1B993F6F00DCFCC0 /* main.m in Sources */,
+				BFFDBBEF1BA023350084F2AD /* MovieMaker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

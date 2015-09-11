@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "MovieMaker.h"
+#import "Utillity.h"
 
 #define MOVIE_WIDTH 800.0f
 #define MOVIE_HEIGHT 450.0f
@@ -23,6 +25,8 @@
 @property int times;
 @property float alpha;
 @property NSMutableArray *imageArray;
+@property NSMutableArray *videoArray;
+
 @property NSMutableArray *faceArray;
 @property int totalPic;
 @property NSTimer *updateTimer;
@@ -30,6 +34,7 @@
 @property (weak, nonatomic) IBOutlet UIView *line2;
 @property (weak, nonatomic) IBOutlet UISwitch *debugSwitch;
 @property BOOL ready;
+@property BOOL finish;
 @end
 
 @implementation ViewController
@@ -39,11 +44,13 @@
     
     self.times = 0;
     self.alpha = 0;
-    self.totalPic = 10;
+    self.totalPic = 5;
     self.imageArray = [[NSMutableArray alloc]init];
+    self.videoArray = [[NSMutableArray alloc]init];
     self.faceArray = [[NSMutableArray alloc]init];
     self.updateTimer = nil;
     self.ready = NO;
+    self.finish = NO;
     [self.debugSwitch addTarget:self action:@selector(setDebugState:) forControlEvents:UIControlEventValueChanged];
 
 }
@@ -52,7 +59,8 @@
     [self prepareImage];
 
     UIImage *bgImage = [UIImage imageNamed:@"bg.png"];
-    bgImage = [self imageWithImage:bgImage scaledToSize:CGSizeMake(self.imageView.frame.size.width,self.imageView.frame.size.height)];
+    bgImage = [Utillity imageWithSize:CGSizeMake(self.imageView.frame.size.width,self.imageView.frame.size.height) image:bgImage];
+
     [self.imageView setImage:bgImage];
 }
 
@@ -60,17 +68,40 @@
     if (self.ready == NO) {
         return;
     }
+    self.finish = NO;
     self.times = 0;
     self.alpha = 0;
+    self.videoArray = [[NSMutableArray alloc]init];
+
     UIImage *bgImage = [UIImage imageNamed:@"bg.png"];
-    bgImage = [self imageWithImage:bgImage scaledToSize:CGSizeMake(self.imageView.frame.size.width,self.imageView.frame.size.height)];
+    bgImage = [Utillity imageWithSize:CGSizeMake(self.imageView.frame.size.width,self.imageView.frame.size.height) image:bgImage];
+
     [self.imageView setImage:bgImage];
     if (self.updateTimer ) {
         [self.updateTimer invalidate];
         self.updateTimer = nil;
     }
-    self.updateTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(createImageAnimation:) userInfo:nil repeats:YES];
+    
+    self.updateTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(createImageAnimation) userInfo:nil repeats:YES];
 
+}
+- (IBAction)pressSave:(id)sender {
+    if (!self.finish) {
+        NSLog(@"not finish");
+        return;
+    }
+    NSLog(@"start record");
+    MovieMaker *movieMaker = [[MovieMaker alloc ]initWithImages];
+    [movieMaker createMovieFromImages:self.videoArray withCompletion:^(BOOL succeed){
+        NSString *message = @"save done";
+        if (!succeed) {
+            message = @"save fail";
+        }
+        
+        UIAlertView *alert =[ [UIAlertView alloc] initWithTitle:@"Video" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+
+    }];
 }
 
 - (void)setDebugState:(id)sender {
@@ -94,7 +125,7 @@
     //  add border
     for (int i = 0; i < self.totalPic; i++) {
         UIImage *image = [self.imageArray objectAtIndex:i];
-        image = [self imageWithBorderImage:image];
+        image = [Utillity imageWithBorder:image];
         [self.imageArray replaceObjectAtIndex:i withObject:image];
     }
 
@@ -104,106 +135,45 @@
     NSLog(@"faceDetection take : %f second" ,[[NSDate date] timeIntervalSinceDate:start]);
 }
 
-- (void)createImageAnimation:(NSTimer *)theTimer {
+- (void)createImageAnimation {
     if (self.alpha > 1) {
         self.alpha = 0;
     }
-    
     if (self.times >= self.totalPic * 10) {
         [self.updateTimer invalidate];
+        self.finish = YES;
         return;
     }
 
     UIImage *image = [self.imageArray objectAtIndex:self.times /10];
-    image = [self imageWithImage:image alpha:self.alpha];
+    image = [Utillity imageWithAlpha:self.alpha image:image];
     image = [self imageWithBackgroundImage:self.imageView.image frontImage:image];
     [self.imageView setImage:image];
+//    [self.videoArray addObject:image];
+    
     self.times += 1;
     self.alpha += 0.1;
 }
 
-// scale
-- (UIImage*)imageWithImage:(UIImage*)image scaledToSize:(CGSize)newSize {
-    UIImage *newImage = nil;
+- (void)faceDetection {
+    for (int i = 0; i < self.totalPic; i++) {
+        UIImage *image = [self.imageArray objectAtIndex:i];
+        CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
+        
+        CIDetector* faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace
+                                                      context:nil options:[NSDictionary dictionaryWithObject:CIDetectorAccuracyHigh forKey:CIDetectorAccuracy]];
+        
+        NSArray *detectResult = [faceDetector featuresInImage:ciImage];
+        if (detectResult) {
+            [self.faceArray addObject:detectResult];
 
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
-    
-    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-    
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
-    if (newImage == nil) {
-        NSLog(@"could not get imageTarget");
+        }
     }
-    UIGraphicsEndImageContext();
-    return newImage;
+    
+    self.ready = YES;
 }
 
-// alpha
-- (UIImage *)imageWithImage:(UIImage*)image alpha:(CGFloat) alpha {
-    UIImage *newImage = nil;
-
-    UIGraphicsBeginImageContextWithOptions(image.size, NO, 0.0f);
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
-
-    // draw cgimage is upside down
-    CGContextTranslateCTM(context, 0, rect.size.height);
-    CGContextScaleCTM(context, 1, -1);
-
-    CGContextSetBlendMode(context, kCGBlendModeMultiply);
-    
-    CGContextSetAlpha(context, alpha);
-    CGContextDrawImage(context, rect, image.CGImage);
-
-
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
-    if (newImage == nil) {
-        NSLog(@"could not get imageTarget");
-    }
-    UIGraphicsEndImageContext();
-    
-    return newImage;
-}
-
-// border
-- (UIImage *)imageWithBorderImage:(UIImage *)image {
-    UIImage *newImage = nil;
-
-    UIGraphicsBeginImageContext(image.size);
-    CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
-    [image drawInRect:rect];
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
-    CGContextSetLineWidth(context, 10.0);
-    CGContextStrokeRect(context, rect);
-
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
-    if (newImage == nil) {
-        NSLog(@"could not get imageTarget");
-    }
-    UIGraphicsEndImageContext();
-    return newImage;
-}
-
-//  take UIImage from view
-- (UIImage *)imageFromView:(UIView *)view {
-    UIImage *newImage = nil;
-
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
-    if (newImage == nil) {
-        NSLog(@"could not get imageTarget");
-    }
-    UIGraphicsEndImageContext();
-    
-    return newImage;
-}
-
-// draw uiimage on uiimage
+// draw uiimage on uiimage by face position
 - (UIImage *)imageWithBackgroundImage:(UIImage *)backgroundImage frontImage:(UIImage *)frontImage{
     UIImage *newImage = nil;
     
@@ -237,21 +207,21 @@
     
     CGRect rectDstDraw = CGRectMake(newX, newY, newFrontImageSize.width, newFrontImageSize.height);
     CGContextRef context = UIGraphicsGetCurrentContext();
-
-    float a = 0.0;
+    
+    float faceAngle = 0.0;
     float x = 0.0;
     float y = 0.0;
     if (detectResult ) {
         for(CIFaceFeature* faceFeature in detectResult) {
-             x = newX + (faceFeature.leftEyePosition.x + faceFeature.rightEyePosition.x) * scaleFactor /2;
-             y = MOVIE_HEIGHT * EYE_Y_DISTANCE_PERCENT ;
-            a = faceFeature.faceAngle;
+            x = newX + (faceFeature.leftEyePosition.x + faceFeature.rightEyePosition.x) * scaleFactor /2;
+            y = MOVIE_HEIGHT * EYE_Y_DISTANCE_PERCENT ;
+            faceAngle = faceFeature.faceAngle;
             CGContextTranslateCTM(context, x, y);
             CGContextRotateCTM (context, [self radians:-faceFeature.faceAngle]);
             CGContextTranslateCTM(context, -x, -y);
         }
     }
-
+    
     [frontImage drawInRect:rectDstDraw];
     
     if (detectResult ) {
@@ -282,15 +252,13 @@
         }
     }
     
-    
+    // rotate back to write
     CGContextTranslateCTM(context, x, y);
-
-    CGContextRotateCTM (context, [self radians:a]);
-
+    CGContextRotateCTM (context, [self radians:faceAngle]);
     CGContextTranslateCTM(context, -x, -y);
     
     UIFont *font = [UIFont boldSystemFontOfSize:20.0];
-    NSString *waterMark = @"Made by Jimmy";
+    NSString *waterMark = @"Made With Lollipop";
     UIColor* textColor = [UIColor redColor];
     
     NSDictionary *attributes = @{NSFontAttributeName: font , NSForegroundColorAttributeName:textColor};
@@ -302,31 +270,13 @@
     [attributedString drawInRect:fontRect];
     
     newImage = UIGraphicsGetImageFromCurrentImageContext();
-
+    
     if (newImage == nil) {
         NSLog(@"could not get imageTarget");
     }
     UIGraphicsEndImageContext();
-
-    return newImage;
-}
-
-- (void)faceDetection {
-    for (int i = 0; i < self.totalPic; i++) {
-        UIImage *image = [self.imageArray objectAtIndex:i];
-        CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
-        
-        CIDetector* faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace
-                                                      context:nil options:[NSDictionary dictionaryWithObject:CIDetectorAccuracyHigh forKey:CIDetectorAccuracy]];
-        
-        NSArray *detectResult = [faceDetector featuresInImage:ciImage];
-        if (detectResult) {
-            [self.faceArray addObject:detectResult];
-
-        }
-    }
     
-    self.ready = YES;
+    return newImage;
 }
 
 - (float)radians:(double) degrees {
