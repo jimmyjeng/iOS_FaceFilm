@@ -12,6 +12,7 @@
 #import "MovieMaker.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "Utillity.h"
+#import "FaceFilm.h"
 
 @interface MovieMaker ()
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *bufferAdapter;
@@ -89,43 +90,50 @@
 
 }
 
-//  FIXME imagesArray
-- (void)createMovieFromImages:(NSArray *)images withCompletion:(MovieMakerCompletion)completion {
+
+
+-(void)createMovieFromImages:(NSArray *)images withCompletion:(MovieMakerCompletion)completion{
+    NSDate *start = [NSDate date];
+
     self.completionBlock = completion;
     
     CGFloat frameWidth = [[self.videoSettings objectForKey:AVVideoWidthKey] floatValue];
     CGFloat frameHeight = [[self.videoSettings objectForKey:AVVideoHeightKey] floatValue];
     CGFloat fRetinaScale = [[UIScreen mainScreen] scale];
     CGSize imgSize = CGSizeMake(frameWidth / fRetinaScale, frameHeight/fRetinaScale);
-
+    
+    FaceFilm *face = [[FaceFilm alloc]initWithImageArray:images];
     //      2.start session
     [self.videoWriter startWriting];
     [self.videoWriter startSessionAtSourceTime:kCMTimeZero];
     
     //    3.Write some samples:
     dispatch_queue_t mediaInputQueue = dispatch_queue_create("mediaInputQueue", NULL);
-    NSInteger frameNumber = [images count];
-    __block NSInteger i = 0;
+    NSInteger frameNumber = [images count] * 10;
+    __block int i = 0;
     [self.writerInput requestMediaDataWhenReadyOnQueue:mediaInputQueue usingBlock:^{
         while (YES){
-            if (i >= frameNumber) {
-                break;
-            }
-            if ([self.writerInput isReadyForMoreMediaData]) {
-                UIImage *resizeImg = [Utillity imageWithSize:imgSize image: [images objectAtIndex:1]];
+            @autoreleasepool {
+                if (i >= frameNumber) {
+                    break;
+                }
+                if ([self.writerInput isReadyForMoreMediaData]) {
+                    UIImage *image = [face getImageByFrameIndex:i];
+                    UIImage * resizeImg = [Utillity imageWithSize:imgSize image: image];
 
-                CVPixelBufferRef sampleBuffer = [self newPixelBufferFromCGImage:[resizeImg CGImage]];
-                
-                if (sampleBuffer) {
-                    if (i == 0) {
-                        [self.bufferAdapter appendPixelBuffer:sampleBuffer withPresentationTime:kCMTimeZero];
-                    } else {
-                        CMTime lastTime = CMTimeMake(i - 1, self.frameTime.timescale);
-                        CMTime presentTime = CMTimeAdd(lastTime, self.frameTime);
-                        [self.bufferAdapter appendPixelBuffer:sampleBuffer withPresentationTime:presentTime];
+                    CVPixelBufferRef sampleBuffer = [self newPixelBufferFromCGImage:[resizeImg CGImage]];
+                    
+                    if (sampleBuffer) {
+                        if (i == 0) {
+                            [self.bufferAdapter appendPixelBuffer:sampleBuffer withPresentationTime:kCMTimeZero];
+                        } else {
+                            CMTime lastTime = CMTimeMake(i - 1, self.frameTime.timescale);
+                            CMTime presentTime = CMTimeAdd(lastTime, self.frameTime);
+                            [self.bufferAdapter appendPixelBuffer:sampleBuffer withPresentationTime:presentTime];
+                        }
+                        CFRelease(sampleBuffer);
+                        i++;
                     }
-                    CFRelease(sampleBuffer);
-                    i++;
                 }
             }
         }
@@ -136,12 +144,14 @@
                 BOOL success = self.videoWriter.status == AVAssetWriterStatusCompleted;
                 if (success) {
                     NSLog(@"record finish");
+                    NSLog(@"time takes :%f" , [[NSDate date] timeIntervalSinceDate:start]);
+
                     [self writeToSavedPhotosAlbum:[NSURL fileURLWithPath :self.videoPath]];
                 }
                 else {
                     NSLog(@"record error : %@",self.videoWriter.error);
                 }
-
+                
             });
         }];
         

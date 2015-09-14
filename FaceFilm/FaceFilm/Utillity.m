@@ -38,9 +38,7 @@
     // draw cgimage is upside down
     CGContextTranslateCTM(context, 0, rect.size.height);
     CGContextScaleCTM(context, 1, -1);
-    
     CGContextSetBlendMode(context, kCGBlendModeMultiply);
-    
     CGContextSetAlpha(context, alpha);
     CGContextDrawImage(context, rect, image.CGImage);
     
@@ -50,7 +48,7 @@
         NSLog(@"could not get imageTarget");
     }
     UIGraphicsEndImageContext();
-    
+
     return newImage;
 }
 
@@ -72,6 +70,7 @@
         NSLog(@"could not get imageTarget");
     }
     UIGraphicsEndImageContext();
+
     return newImage;
 }
 
@@ -91,6 +90,70 @@
     return newImage;
 }
 
++ (float)radians:(double) degrees {
+    return degrees * M_PI/180;
+}
 
 
++ (UIImage *)imageSize:(CGSize)sizeTarget srcOvalize:(UIImage *)imageSrc border:(BOOL)bBorder {
+    // Create the bitmap graphics context
+    UIGraphicsBeginImageContextWithOptions(sizeTarget, NO, 0.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Get the width and heights
+    CGFloat fWidthSrc = imageSrc.size.width;
+    CGFloat fHeightSrc = imageSrc.size.height;
+    CGFloat fWidthDst = sizeTarget.width;
+    CGFloat fHeightDst = sizeTarget.height;
+    
+    // Calculate the scale factor
+    CGFloat fScaleX = fWidthDst / fWidthSrc;
+    CGFloat fScaleY = fHeightDst / fHeightSrc;
+    
+    // Create and CLIP to a CIRCULAR Path
+    CGFloat kInsetRatio = 0.01;
+    CGRect rectEllipse = CGRectMake(0, 0, fWidthDst, fHeightDst);
+    
+    if (bBorder) {
+        rectEllipse = CGRectInset(rectEllipse, fWidthDst * kInsetRatio, fHeightDst * kInsetRatio);
+    }
+    
+    CGContextSaveGState(context);
+    CGContextBeginPath(context);
+    CGContextAddEllipseInRect(context, rectEllipse);
+    CGContextClosePath(context);
+    CGContextClip(context);
+    
+    // Set the SCALE factor for the graphics context, All future draw calls will be scaled by this factor
+    CGContextScaleCTM(context, fScaleX, fScaleY);
+    
+    // Draw the IMAGE
+    CGRect rectSrc = CGRectMake(0, 0, fWidthSrc, fHeightSrc);
+    if (bBorder) {
+        rectSrc = CGRectInset(rectSrc, fWidthSrc * kInsetRatio, fHeightSrc * kInsetRatio);
+    }
+    
+    [imageSrc drawInRect:rectSrc];
+    
+    // Restore
+    CGContextRestoreGState(context);
+    
+    if (bBorder) {
+        CGContextSetShouldAntialias(context, YES);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0].CGColor);
+        
+        CGFloat fLineWidth = fWidthDst / 40.0;
+        if (fLineWidth > 3.0) {
+            fLineWidth = 3.0;
+        }
+        
+        CGContextSetLineWidth(context, fLineWidth);
+        CGContextStrokeEllipseInRect(context, CGRectMake(fLineWidth / 2.0, fLineWidth / 2.0, fWidthDst - fLineWidth, fHeightDst - fLineWidth));
+    }
+    
+    UIImage *imageTarget = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return imageTarget;
+}
 @end

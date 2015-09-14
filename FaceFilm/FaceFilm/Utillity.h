@@ -16,4 +16,6 @@
 + (UIImage *)imageWithBorder:(UIImage *)image;
 + (UIImage *)imageFromView:(UIView *)view;
 
++ (float)radians:(double) degrees;
++ (UIImage *)imageSize:(CGSize)sizeTarget srcOvalize:(UIImage *)imageSrc border:(BOOL)bBorder;
 @end

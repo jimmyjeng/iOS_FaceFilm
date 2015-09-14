@@ -32,6 +32,11 @@
 		BF4EA6B01B9D601800949F4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4EA6AF1B9D601800949F4B /* QuartzCore.framework */; };
 		BFAD4AEF1BA27B8B007DC19B /* save.png in Resources */ = {isa = PBXBuildFile; fileRef = BFAD4AEE1BA27B8B007DC19B /* save.png */; };
 		BFAD4AF21BA2A059007DC19B /* Utillity.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAD4AF11BA2A059007DC19B /* Utillity.m */; };
+		BFAD4AF51BA2B0E3007DC19B /* FaceFilm.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAD4AF41BA2B0E3007DC19B /* FaceFilm.m */; };
+		BFB0042D1BA67175003135E7 /* Test01.png in Resources */ = {isa = PBXBuildFile; fileRef = BFB004291BA67174003135E7 /* Test01.png */; };
+		BFB0042E1BA67175003135E7 /* Test02.png in Resources */ = {isa = PBXBuildFile; fileRef = BFB0042A1BA67174003135E7 /* Test02.png */; };
+		BFB0042F1BA67175003135E7 /* Test03.png in Resources */ = {isa = PBXBuildFile; fileRef = BFB0042B1BA67175003135E7 /* Test03.png */; };
+		BFB004301BA67175003135E7 /* Test04.png in Resources */ = {isa = PBXBuildFile; fileRef = BFB0042C1BA67175003135E7 /* Test04.png */; };
 		BFFDBBEF1BA023350084F2AD /* MovieMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = BFFDBBEE1BA023350084F2AD /* MovieMaker.m */; };
 		BFFDBBF11BA0240F0084F2AD /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFFDBBF01BA0240F0084F2AD /* AVFoundation.framework */; };
 		BFFDBBF31BA048780084F2AD /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFFDBBF21BA048780084F2AD /* AssetsLibrary.framework */; };
@@ -80,6 +85,12 @@
 		BFAD4AEE1BA27B8B007DC19B /* save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = save.png; sourceTree = "<group>"; };
 		BFAD4AF01BA2A059007DC19B /* Utillity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utillity.h; sourceTree = "<group>"; };
 		BFAD4AF11BA2A059007DC19B /* Utillity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utillity.m; sourceTree = "<group>"; };
+		BFAD4AF31BA2B0E3007DC19B /* FaceFilm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceFilm.h; sourceTree = "<group>"; };
+		BFAD4AF41BA2B0E3007DC19B /* FaceFilm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceFilm.m; sourceTree = "<group>"; };
+		BFB004291BA67174003135E7 /* Test01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Test01.png; sourceTree = "<group>"; };
+		BFB0042A1BA67174003135E7 /* Test02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Test02.png; sourceTree = "<group>"; };
+		BFB0042B1BA67175003135E7 /* Test03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Test03.png; sourceTree = "<group>"; };
+		BFB0042C1BA67175003135E7 /* Test04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Test04.png; sourceTree = "<group>"; };
 		BFFDBBED1BA023350084F2AD /* MovieMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieMaker.h; sourceTree = "<group>"; };
 		BFFDBBEE1BA023350084F2AD /* MovieMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieMaker.m; sourceTree = "<group>"; };
 		BFFDBBF01BA0240F0084F2AD /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -141,19 +152,21 @@
 		BF47FEF91B993F6F00DCFCC0 /* FaceFilm */ = {
 			isa = PBXGroup;
 			children = (
-				BFBA2C5A1B994A5F00CA8DD0 /* image */,
 				BF47FEFE1B993F6F00DCFCC0 /* AppDelegate.h */,
 				BF47FEFF1B993F6F00DCFCC0 /* AppDelegate.m */,
-				BF47FF011B993F6F00DCFCC0 /* ViewController.h */,
-				BFAD4AF01BA2A059007DC19B /* Utillity.h */,
-				BFAD4AF11BA2A059007DC19B /* Utillity.m */,
-				BF47FF021B993F6F00DCFCC0 /* ViewController.m */,
-				BFFDBBED1BA023350084F2AD /* MovieMaker.h */,
-				BFFDBBEE1BA023350084F2AD /* MovieMaker.m */,
-				BF47FF041B993F6F00DCFCC0 /* Main.storyboard */,
+				BFAD4AF31BA2B0E3007DC19B /* FaceFilm.h */,
+				BFAD4AF41BA2B0E3007DC19B /* FaceFilm.m */,
+				BFBA2C5A1B994A5F00CA8DD0 /* image */,
 				BF47FF071B993F6F00DCFCC0 /* Images.xcassets */,
 				BF47FF091B993F6F00DCFCC0 /* LaunchScreen.xib */,
+				BF47FF041B993F6F00DCFCC0 /* Main.storyboard */,
+				BFFDBBED1BA023350084F2AD /* MovieMaker.h */,
+				BFFDBBEE1BA023350084F2AD /* MovieMaker.m */,
 				BF47FEFA1B993F6F00DCFCC0 /* Supporting Files */,
+				BFAD4AF01BA2A059007DC19B /* Utillity.h */,
+				BFAD4AF11BA2A059007DC19B /* Utillity.m */,
+				BF47FF011B993F6F00DCFCC0 /* ViewController.h */,
+				BF47FF021B993F6F00DCFCC0 /* ViewController.m */,
 			);
 			path = FaceFilm;
 			sourceTree = "<group>";
@@ -187,8 +200,6 @@
 		BFBA2C5A1B994A5F00CA8DD0 /* image */ = {
 			isa = PBXGroup;
 			children = (
-				BFAD4AEE1BA27B8B007DC19B /* save.png */,
-				BF44BCA11B9EE6060020AE09 /* Start.png */,
 				BF44BC891B9EAFDA0020AE09 /* 01.png */,
 				BF44BC8A1B9EAFDA0020AE09 /* 02.png */,
 				BF44BC8B1B9EAFDA0020AE09 /* 03.png */,
@@ -202,6 +213,12 @@
 				BF44BC9D1B9EC76E0020AE09 /* 11.png */,
 				BF44BC9E1B9EC76E0020AE09 /* 12.png */,
 				BF44BC7E1B9E7B000020AE09 /* bg.png */,
+				BFAD4AEE1BA27B8B007DC19B /* save.png */,
+				BF44BCA11B9EE6060020AE09 /* Start.png */,
+				BFB004291BA67174003135E7 /* Test01.png */,
+				BFB0042A1BA67174003135E7 /* Test02.png */,
+				BFB0042B1BA67175003135E7 /* Test03.png */,
+				BFB0042C1BA67175003135E7 /* Test04.png */,
 			);
 			name = image;
 			sourceTree = "<group>";
@@ -286,6 +303,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFB0042F1BA67175003135E7 /* Test03.png in Resources */,
 				BF44BC9B1B9EB6660020AE09 /* 09.png in Resources */,
 				BF44BC931B9EAFDA0020AE09 /* 03.png in Resources */,
 				BFAD4AEF1BA27B8B007DC19B /* save.png in Resources */,
@@ -293,8 +311,11 @@
 				BF44BCA21B9EE6060020AE09 /* Start.png in Resources */,
 				BF47FF061B993F6F00DCFCC0 /* Main.storyboard in Resources */,
 				BF44BC7F1B9E7B000020AE09 /* bg.png in Resources */,
+				BFB0042E1BA67175003135E7 /* Test02.png in Resources */,
+				BFB004301BA67175003135E7 /* Test04.png in Resources */,
 				BF47FF0B1B993F6F00DCFCC0 /* LaunchScreen.xib in Resources */,
 				BF44BC981B9EAFDA0020AE09 /* 08.png in Resources */,
+				BFB0042D1BA67175003135E7 /* Test01.png in Resources */,
 				BF44BC971B9EAFDA0020AE09 /* 07.png in Resources */,
 				BF44BC9C1B9EB6660020AE09 /* 10.png in Resources */,
 				BF44BC961B9EAFDA0020AE09 /* 06.png in Resources */,
@@ -325,6 +346,7 @@
 				BF47FF001B993F6F00DCFCC0 /* AppDelegate.m in Sources */,
 				BFAD4AF21BA2A059007DC19B /* Utillity.m in Sources */,
 				BF47FEFD1B993F6F00DCFCC0 /* main.m in Sources */,
+				BFAD4AF51BA2B0E3007DC19B /* FaceFilm.m in Sources */,
 				BFFDBBEF1BA023350084F2AD /* MovieMaker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

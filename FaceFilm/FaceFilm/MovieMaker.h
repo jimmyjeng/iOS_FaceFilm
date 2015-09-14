@@ -13,5 +13,6 @@ typedef void(^MovieMakerCompletion)(BOOL succeed);
 
 -(instancetype)initWithImages;
 -(void)createMovieFromImages:(NSArray *)images withCompletion:(MovieMakerCompletion)completion;
+//- (void)createMovie:(int)photoNum withCompletion:(MovieMakerCompletion)completion;
 
 @end
