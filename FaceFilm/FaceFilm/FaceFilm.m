@@ -39,7 +39,6 @@
             image = [Utillity imageWithBorder:image];
             [self.imageArray addObject:image];
         }
-        
         [self faceDetection];
     }
     return self;
@@ -51,6 +50,7 @@
         UIImage *image = [self.imageArray objectAtIndex:i];
         CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
         
+        // throw BSXPCMessage received error for message: Connection interrupted ?
         CIDetector* faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace
                                                       context:nil options:[NSDictionary dictionaryWithObject:CIDetectorAccuracyHigh forKey:CIDetectorAccuracy]];
         
@@ -64,6 +64,7 @@
 - (UIImage *)getImageByFrameIndex:(int)index {
     UIImage *image = [self.imageArray objectAtIndex:index /10];
     float alpha = (index % 10)/10.0 + 0.1;
+
     UIImage *alphaImage = [Utillity imageWithAlpha:alpha image:image];
     UIImage *finalImage = [self imageWithBackgroundImage:self.bgImage frontImage:alphaImage frameIndex:index];
     self.bgImage = finalImage;
@@ -154,4 +155,6 @@
     
     return newImage;
 }
+
+
 @end

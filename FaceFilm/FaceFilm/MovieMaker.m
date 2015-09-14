@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import "MovieMaker.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+
 #import "Utillity.h"
 #import "FaceFilm.h"
+#import "MovieMaker.h"
 
 @interface MovieMaker ()
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *bufferAdapter;
@@ -101,12 +102,12 @@
     CGFloat frameHeight = [[self.videoSettings objectForKey:AVVideoHeightKey] floatValue];
     CGFloat fRetinaScale = [[UIScreen mainScreen] scale];
     CGSize imgSize = CGSizeMake(frameWidth / fRetinaScale, frameHeight/fRetinaScale);
-    
+
     FaceFilm *face = [[FaceFilm alloc]initWithImageArray:images];
+
     //      2.start session
     [self.videoWriter startWriting];
     [self.videoWriter startSessionAtSourceTime:kCMTimeZero];
-    
     //    3.Write some samples:
     dispatch_queue_t mediaInputQueue = dispatch_queue_create("mediaInputQueue", NULL);
     NSInteger frameNumber = [images count] * 10;
@@ -122,7 +123,6 @@
                     UIImage * resizeImg = [Utillity imageWithSize:imgSize image: image];
 
                     CVPixelBufferRef sampleBuffer = [self newPixelBufferFromCGImage:[resizeImg CGImage]];
-                    
                     if (sampleBuffer) {
                         if (i == 0) {
                             [self.bufferAdapter appendPixelBuffer:sampleBuffer withPresentationTime:kCMTimeZero];
@@ -144,9 +144,10 @@
                 BOOL success = self.videoWriter.status == AVAssetWriterStatusCompleted;
                 if (success) {
                     NSLog(@"record finish");
-                    NSLog(@"time takes :%f" , [[NSDate date] timeIntervalSinceDate:start]);
+                    NSLog(@"video takes :%f" , [[NSDate date] timeIntervalSinceDate:start]);
 
-                    [self writeToSavedPhotosAlbum:[NSURL fileURLWithPath :self.videoPath]];
+//                    [self writeToSavedPhotosAlbum:[NSURL fileURLWithPath :self.videoPath]];
+                    [self CompileFilesToMakeMovie:[images count]];
                 }
                 else {
                     NSLog(@"record error : %@",self.videoWriter.error);
@@ -233,5 +234,58 @@
     }
     
 }
+
+-(void)CompileFilesToMakeMovie:(NSInteger)seconds {
+    NSDate *start = [NSDate date];
+    AVMutableComposition* mixComposition = [AVMutableComposition composition];
+    
+    NSURL *audio_inputFileUrl = [[NSBundle mainBundle]
+                      URLForResource:@"bgMusic" withExtension:@"mp4"];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths firstObject];
+    
+    NSString *video_inputFilePath = [documentsDirectory stringByAppendingFormat:@"/export.mp4"];
+    NSURL* video_inputFileUrl = [NSURL fileURLWithPath:video_inputFilePath];
+    
+    NSString *outputFilePath = [documentsDirectory stringByAppendingFormat:@"/outputFile.mp4"];
+    NSURL* outputFileUrl = [NSURL fileURLWithPath:outputFilePath];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:outputFilePath])
+        [[NSFileManager defaultManager] removeItemAtPath:outputFilePath error:nil];
+    
+    
+    
+    CMTime nextClipStartTime = kCMTimeZero;
+    
+    CMTime duration = CMTimeMake(seconds, 1);
+    
+    AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:video_inputFileUrl options:nil];
+    CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,duration);
+    AVMutableCompositionTrack *a_compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    [a_compositionVideoTrack insertTimeRange:video_timeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+    
+    //nextClipStartTime = CMTimeAdd(nextClipStartTime, a_timeRange.duration);
+    
+    AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:audio_inputFileUrl options:nil];
+    CMTimeRange audio_timeRange = CMTimeRangeMake(kCMTimeZero, duration);
+    AVMutableCompositionTrack *b_compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    [b_compositionAudioTrack insertTimeRange:audio_timeRange ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+    
+    
+    
+    AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
+    _assetExport.outputFileType = AVFileTypeMPEG4;
+    _assetExport.outputURL = outputFileUrl;
+    
+    [_assetExport exportAsynchronouslyWithCompletionHandler:
+     ^(void ) {
+         [self writeToSavedPhotosAlbum:outputFileUrl];
+         NSLog(@"audio takes : %f",[[NSDate date]timeIntervalSinceDate:start]);
+     }
+     ];
+}
+
+    
 
 @end

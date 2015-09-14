@@ -37,7 +37,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    self.totalPic = 12;
+    self.totalPic = 10;
     self.imageArray = [[NSMutableArray alloc]init];
     self.detectResult = [[NSArray alloc]init];
     self.bigFaceFeature = nil;
