@@ -38,7 +38,7 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     // change picture number here
-    self.totalPic = 5;
+    self.totalPic = 10;
     self.imageArray = [[NSMutableArray alloc]init];
     self.detectResult = [[NSArray alloc]init];
     self.bigFaceFeature = nil;
@@ -46,6 +46,7 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self prepareImage];
 }
 
@@ -71,16 +72,26 @@
 - (IBAction)pressSave:(id)sender {
     MovieMaker *movieMaker = [[MovieMaker alloc ]initWithImages];
     [movieMaker createMovieFromImages:self.imageArray withCompletion:^(BOOL succeed){
-        // get main thread
-        NSString *message = @"save done";
-        if (!succeed) {
-            message = @"save fail";
+        if ([NSThread isMainThread]) {
+            [self completeMessage:succeed];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self completeMessage:succeed];
+            });
         }
+        // get main thread
         
-        UIAlertView *alert =[ [UIAlertView alloc] initWithTitle:@"Video" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [alert show];
-
     }];
+}
+
+- (void)completeMessage:(BOOL) succeed {
+    NSString *message = @"save done";
+    if (!succeed) {
+        message = @"save fail";
+    }
+    
+    UIAlertView *alert =[ [UIAlertView alloc] initWithTitle:@"Video" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    [alert show];
 }
 
 - (void)didReceiveMemoryWarning {

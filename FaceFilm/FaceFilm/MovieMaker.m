@@ -115,7 +115,6 @@
                 }
                 if ([self.writerInput isReadyForMoreMediaData]) {
                     UIImage *image = [face getImageByFrameIndex:i];
-                    NSLog(@"frame:%d",i);
                     CVPixelBufferRef sampleBuffer = [self newPixelBufferFromCGImage:[image CGImage]];
                     if (sampleBuffer) {
                         if (i == 0) {
@@ -138,9 +137,7 @@
                 BOOL success = self.videoWriter.status == AVAssetWriterStatusCompleted;
                 if (success) {
                     NSLog(@"record finish");
-                    NSLog(@"video takes :%f" , [[NSDate date] timeIntervalSinceDate:start]);
-
-//                    [self writeToSavedPhotosAlbum:[NSURL fileURLWithPath :self.videoPath]];
+                    NSLog(@"video takes : %f" , [[NSDate date] timeIntervalSinceDate:start]);
                     [self CompileFilesToMakeMovie:[images count]];
                 }
                 else {
@@ -279,7 +276,4 @@
      }
      ];
 }
-
-    
-
 @end

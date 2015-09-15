@@ -39,7 +39,7 @@
         
         for (int i = 0; i < [images count]; i++) {
             UIImage *image = [images objectAtIndex:i];
-            image = [Utillity imageWithBorder:image];
+//            image = [Utillity imageWithBorder:image];
             [self.imageArray addObject:image];
         }
         [self faceDetection];
@@ -48,6 +48,8 @@
 }
 
 - (void)faceDetection {
+    NSDate *start = [NSDate date];
+
     // key 0 ~ n-1
     for (int i = 0; i < [self.imageArray count]; i++) {
         UIImage *image = [self.imageArray objectAtIndex:i];
@@ -60,30 +62,33 @@
         NSArray *detectResult = [faceDetector featuresInImage:ciImage];
         NSString *key = [NSString stringWithFormat:@"%02d",i];
         [self.detectResultDict setObject:detectResult forKey:key];
+        NSLog(@"index:%d face:%@",i+1 , detectResult);
     }
+    NSLog(@"face takes : %f" , [[NSDate date] timeIntervalSinceDate:start]);
+
 }
 
 // frameIndex 0 ~ 99
 - (UIImage *)getImageByFrameIndex:(int)index {
     UIImage *image = [self.imageArray objectAtIndex:index /10];
+    
+    if (index % 10 == 0) {
+        image = [self imageRotateAndScaleWithFace:self.bgImage frontImage:image frameIndex:index];
+        [self.imageArray replaceObjectAtIndex:index/10 withObject:image];
+    }
+    
     // 0.1 ~ 1
     float alpha = (index % 10)/10.0 + 0.1;
-
-//    UIImage *borderImage = [Utillity imageWithBorder:image];
     UIImage *alphaImage = [Utillity imageWithAlpha:alpha image:image];
-    UIImage *finalImage = [self imageWithBackgroundImage:self.bgImage frontImage:alphaImage frameIndex:index];
+    UIImage *finalImage = [self imageWithBackgroundImage:self.bgImage frontImage:alphaImage];
     self.bgImage = finalImage;
     return finalImage;
 }
 
-// draw uiimage on uiimage by face position
-- (UIImage *)imageWithBackgroundImage:(UIImage *)backgroundImage frontImage:(UIImage *)frontImage frameIndex:(int)frameIndex{
+- (UIImage *)imageRotateAndScaleWithFace:(UIImage *)backgroundImage frontImage:(UIImage *)frontImage frameIndex:(int)frameIndex {
     UIImage *newImage = nil;
     
     UIGraphicsBeginImageContextWithOptions(backgroundImage.size, NO, 0.0);
-    CGRect rect = CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height);
-    [backgroundImage drawInRect:rect];
-    
     int index = (frameIndex/10);
     NSString *key = [NSString stringWithFormat:@"%02d",index];
     NSArray* detectResult = [self.detectResultDict objectForKey:key];
@@ -115,7 +120,6 @@
     }
     else {
         // if can't detect face , then put the image at middle and 80% size of video
-
         CGFloat widthFactor = MOVIE_WIDTH * 0.8 / frontImage.size.width;
         CGFloat heightFactor = MOVIE_HEIGHT * 0.8 / frontImage.size.height;
         CGFloat factor = ((widthFactor > heightFactor) ? heightFactor : widthFactor);
@@ -131,16 +135,21 @@
     float faceAngle = 0.0;
     float x = 0.0;
     float y = 0.0;
+    
     if (bigFaceFeature ) {
-            x = newX + (bigFaceFeature.leftEyePosition.x + bigFaceFeature.rightEyePosition.x) * scaleFactor /2;
-            y = MOVIE_HEIGHT * EYE_Y_DISTANCE_PERCENT ;
-            faceAngle = bigFaceFeature.faceAngle;
-            CGContextTranslateCTM(context, x, y);
-            CGContextRotateCTM (context, [Utillity radians:-bigFaceFeature.faceAngle]);
-            CGContextTranslateCTM(context, -x, -y);
-        
+        x = newX + (bigFaceFeature.leftEyePosition.x + bigFaceFeature.rightEyePosition.x) * scaleFactor /2;
+        y = MOVIE_HEIGHT * EYE_Y_DISTANCE_PERCENT ;
+        faceAngle = bigFaceFeature.faceAngle;
+        CGContextTranslateCTM(context, x, y);
+        CGContextRotateCTM (context, [Utillity radians:-bigFaceFeature.faceAngle]);
+        CGContextTranslateCTM(context, -x, -y);
     }
     
+    CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
+    CGContextSetLineWidth(context, 10.0);
+    CGContextStrokeRect(context, rectDstDraw);
+//    CGContextSetShadowWithColor(context, CGSizeMake(10, 0), 5, [UIColor orangeColor].CGColor);
+
     [frontImage drawInRect:rectDstDraw];
     
     // rotate back to write
@@ -148,6 +157,38 @@
     CGContextRotateCTM (context, [Utillity radians:faceAngle]);
     CGContextTranslateCTM(context, -x, -y);
     
+//    UIFont *font = [UIFont boldSystemFontOfSize:(20.0/[[UIScreen mainScreen] scale])];
+//    NSString *waterMark = @"Made With Lollipop";
+//    UIColor* textColor = [UIColor redColor];
+//    
+//    NSDictionary *attributes = @{NSFontAttributeName: font , NSForegroundColorAttributeName:textColor};
+//    CGSize fontSize = [waterMark sizeWithAttributes:attributes];
+//    
+//    CGRect fontRect = CGRectMake(0.0, backgroundImage.size.height - fontSize.height, fontSize.width, fontSize.height);
+//    
+//    NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:waterMark attributes:attributes];
+//    [attributedString drawInRect:fontRect];
+    
+    newImage = UIGraphicsGetImageFromCurrentImageContext();
+    if (newImage == nil) {
+        NSLog(@"could not get imageTarget");
+    }
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+}
+
+- (UIImage *)imageWithBackgroundImage:(UIImage *)backgroundImage frontImage:(UIImage *)frontImage {
+    UIImage *newImage = nil;
+    
+    UIGraphicsBeginImageContextWithOptions(backgroundImage.size, NO, 0.0);
+    
+    CGRect rect = CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height);
+    [backgroundImage drawInRect:rect];
+    
+    CGRect rectDstDraw = CGRectMake(0, 0, frontImage.size.width, frontImage.size.height);
+    [frontImage drawInRect:rectDstDraw];
+
     UIFont *font = [UIFont boldSystemFontOfSize:(20.0/[[UIScreen mainScreen] scale])];
     NSString *waterMark = @"Made With Lollipop";
     UIColor* textColor = [UIColor redColor];
@@ -165,9 +206,6 @@
         NSLog(@"could not get imageTarget");
     }
     UIGraphicsEndImageContext();
-    
     return newImage;
 }
-
-
 @end
