@@ -9,8 +9,8 @@
 #import "FaceFilm.h"
 #import "Utillity.h"
 
-#define MOVIE_WIDTH 800.0f
-#define MOVIE_HEIGHT 450.0f
+#define MOVIE_WIDTH (800.0f/[[UIScreen mainScreen] scale])
+#define MOVIE_HEIGHT (450.0f/[[UIScreen mainScreen] scale])
 
 #define EYE_X_DISTANCE_PERCENT 0.1f
 #define EYE_Y_DISTANCE_PERCENT 0.36f
@@ -32,8 +32,11 @@
         
         self.imageArray = [[NSMutableArray alloc]init];
         self.detectResultDict = [[NSMutableDictionary alloc]init];
-        self.bgImage = [Utillity imageWithSize:CGSizeMake(800,450) image:[UIImage imageNamed:@"bg.png"]];
-
+        
+//        CGFloat fRetinaScale = [[UIScreen mainScreen] scale];
+        CGSize imgSize = CGSizeMake(MOVIE_WIDTH  , MOVIE_HEIGHT );
+        self.bgImage = [Utillity imageWithSize:imgSize image:[UIImage imageNamed:@"bg.png"]];
+        
         for (int i = 0; i < [images count]; i++) {
             UIImage *image = [images objectAtIndex:i];
             image = [Utillity imageWithBorder:image];
@@ -63,8 +66,10 @@
 // frameIndex 0 ~ 99
 - (UIImage *)getImageByFrameIndex:(int)index {
     UIImage *image = [self.imageArray objectAtIndex:index /10];
+    // 0.1 ~ 1
     float alpha = (index % 10)/10.0 + 0.1;
 
+//    UIImage *borderImage = [Utillity imageWithBorder:image];
     UIImage *alphaImage = [Utillity imageWithAlpha:alpha image:image];
     UIImage *finalImage = [self imageWithBackgroundImage:self.bgImage frontImage:alphaImage frameIndex:index];
     self.bgImage = finalImage;
@@ -91,9 +96,10 @@
             }
         }
     }
-    float offsetX = -1;
-    float offsetY = -1;
-    float eyeDistance = -1;
+    
+    float newX = 0;
+    float newY = 0;
+    float eyeDistance = 0;
     float scaleFactor = 1 ;
     CGSize newFrontImageSize = frontImage.size;
     if(bigFaceFeature) {
@@ -103,14 +109,21 @@
         newFrontImageSize = CGSizeMake(frontImage.size.width*scaleFactor, frontImage.size.height*scaleFactor);
         
         //  let eye's distance is MOVIE_WIDTH * EYE_X_DISTANCE_PERCENT and at X center
-        offsetX = backgroundImage.size.width/2 -( (bigFaceFeature.leftEyePosition.x + bigFaceFeature.rightEyePosition.x) * scaleFactor /2 );
+        newX = backgroundImage.size.width/2 -( (bigFaceFeature.leftEyePosition.x + bigFaceFeature.rightEyePosition.x) * scaleFactor /2 );
         // let eye is MOVIE_HEIGHT * EYE_Y_DISTANCE_PERCENT from top at y axis
-        offsetY = MOVIE_HEIGHT * EYE_Y_DISTANCE_PERCENT + (bigFaceFeature.leftEyePosition.y + bigFaceFeature.rightEyePosition.y) *scaleFactor /2 - newFrontImageSize.height;
+        newY = MOVIE_HEIGHT * EYE_Y_DISTANCE_PERCENT + (bigFaceFeature.leftEyePosition.y + bigFaceFeature.rightEyePosition.y) *scaleFactor /2 - newFrontImageSize.height;
     }
-    
-    // if can't detect face , then put the image at middle
-    float newX = (offsetX == -1 )? backgroundImage.size.width/2 - newFrontImageSize.width/2 :  offsetX;
-    float newY = (offsetY == -1 )? backgroundImage.size.height/2 - newFrontImageSize.height/2 : offsetY;
+    else {
+        // if can't detect face , then put the image at middle and 80% size of video
+
+        CGFloat widthFactor = MOVIE_WIDTH * 0.8 / frontImage.size.width;
+        CGFloat heightFactor = MOVIE_HEIGHT * 0.8 / frontImage.size.height;
+        CGFloat factor = ((widthFactor > heightFactor) ? heightFactor : widthFactor);
+        
+        newFrontImageSize = CGSizeMake(frontImage.size.width * factor, frontImage.size.height * factor);
+        newX = backgroundImage.size.width/2 - newFrontImageSize.width/2;
+        newY = backgroundImage.size.height/2 - newFrontImageSize.height/2;
+    }
     
     CGRect rectDstDraw = CGRectMake(newX, newY, newFrontImageSize.width, newFrontImageSize.height);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -135,7 +148,7 @@
     CGContextRotateCTM (context, [Utillity radians:faceAngle]);
     CGContextTranslateCTM(context, -x, -y);
     
-    UIFont *font = [UIFont boldSystemFontOfSize:20.0];
+    UIFont *font = [UIFont boldSystemFontOfSize:(20.0/[[UIScreen mainScreen] scale])];
     NSString *waterMark = @"Made With Lollipop";
     UIColor* textColor = [UIColor redColor];
     

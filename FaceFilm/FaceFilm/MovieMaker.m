@@ -97,11 +97,6 @@
     NSDate *start = [NSDate date];
 
     self.completionBlock = completion;
-    
-    CGFloat frameWidth = [[self.videoSettings objectForKey:AVVideoWidthKey] floatValue];
-    CGFloat frameHeight = [[self.videoSettings objectForKey:AVVideoHeightKey] floatValue];
-    CGFloat fRetinaScale = [[UIScreen mainScreen] scale];
-    CGSize imgSize = CGSizeMake(frameWidth / fRetinaScale, frameHeight/fRetinaScale);
 
     FaceFilm *face = [[FaceFilm alloc]initWithImageArray:images];
 
@@ -120,9 +115,8 @@
                 }
                 if ([self.writerInput isReadyForMoreMediaData]) {
                     UIImage *image = [face getImageByFrameIndex:i];
-                    UIImage * resizeImg = [Utillity imageWithSize:imgSize image: image];
-
-                    CVPixelBufferRef sampleBuffer = [self newPixelBufferFromCGImage:[resizeImg CGImage]];
+                    NSLog(@"frame:%d",i);
+                    CVPixelBufferRef sampleBuffer = [self newPixelBufferFromCGImage:[image CGImage]];
                     if (sampleBuffer) {
                         if (i == 0) {
                             [self.bufferAdapter appendPixelBuffer:sampleBuffer withPresentationTime:kCMTimeZero];

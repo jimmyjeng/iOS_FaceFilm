@@ -37,7 +37,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    self.totalPic = 10;
+    // change picture number here
+    self.totalPic = 5;
     self.imageArray = [[NSMutableArray alloc]init];
     self.detectResult = [[NSArray alloc]init];
     self.bigFaceFeature = nil;
@@ -70,6 +71,7 @@
 - (IBAction)pressSave:(id)sender {
     MovieMaker *movieMaker = [[MovieMaker alloc ]initWithImages];
     [movieMaker createMovieFromImages:self.imageArray withCompletion:^(BOOL succeed){
+        // get main thread
         NSString *message = @"save done";
         if (!succeed) {
             message = @"save fail";
