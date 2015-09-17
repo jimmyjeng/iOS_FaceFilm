@@ -33,13 +33,11 @@
         self.imageArray = [[NSMutableArray alloc]init];
         self.detectResultDict = [[NSMutableDictionary alloc]init];
         
-//        CGFloat fRetinaScale = [[UIScreen mainScreen] scale];
         CGSize imgSize = CGSizeMake(MOVIE_WIDTH  , MOVIE_HEIGHT );
         self.bgImage = [Utillity imageWithSize:imgSize image:[UIImage imageNamed:@"bg.png"]];
         
         for (int i = 0; i < [images count]; i++) {
             UIImage *image = [images objectAtIndex:i];
-//            image = [Utillity imageWithBorder:image];
             [self.imageArray addObject:image];
         }
         [self faceDetection];
@@ -148,7 +146,6 @@
     CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
     CGContextSetLineWidth(context, 10.0);
     CGContextStrokeRect(context, rectDstDraw);
-//    CGContextSetShadowWithColor(context, CGSizeMake(10, 0), 5, [UIColor orangeColor].CGColor);
 
     [frontImage drawInRect:rectDstDraw];
     
@@ -156,18 +153,6 @@
     CGContextTranslateCTM(context, x, y);
     CGContextRotateCTM (context, [Utillity radians:faceAngle]);
     CGContextTranslateCTM(context, -x, -y);
-    
-//    UIFont *font = [UIFont boldSystemFontOfSize:(20.0/[[UIScreen mainScreen] scale])];
-//    NSString *waterMark = @"Made With Lollipop";
-//    UIColor* textColor = [UIColor redColor];
-//    
-//    NSDictionary *attributes = @{NSFontAttributeName: font , NSForegroundColorAttributeName:textColor};
-//    CGSize fontSize = [waterMark sizeWithAttributes:attributes];
-//    
-//    CGRect fontRect = CGRectMake(0.0, backgroundImage.size.height - fontSize.height, fontSize.width, fontSize.height);
-//    
-//    NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:waterMark attributes:attributes];
-//    [attributedString drawInRect:fontRect];
     
     newImage = UIGraphicsGetImageFromCurrentImageContext();
     if (newImage == nil) {
